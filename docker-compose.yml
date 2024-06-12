@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lamp_web
+    ports:
+      - "80:80"
+    volumes:
+      - web:/var/www/html
+    networks:
+      - lamp-network
+
+  db:
+    image: mysql:5.7
+    container_name: lamp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lamp-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: lamp_phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    networks:
+      - lamp-network
+
+networks:
+  lamp-network:
+
+volumes: 
+  db_data:
+  web:
